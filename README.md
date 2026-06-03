@@ -41,6 +41,33 @@ pnpm test                 # tests unitarios
 pnpm test:e2e             # tests end-to-end
 ```
 
+## Tooling
+
+### VSCode — formato al guardar
+
+El archivo `.vscode/settings.json` configura:
+
+- `editor.formatOnSave: true`
+- `source.fixAll.eslint` al guardar
+- ESLint como formateador por defecto para TypeScript y JavaScript
+
+Esto funciona si tenés el plugin [dbaeumer.vscode-eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) instalado.
+
+### Husky + lint-staged — calidad automática en cada commit
+
+Al hacer `git commit`:
+
+1. **Husky** dispara el hook `pre-commit`
+2. **lint-staged** corre ESLint --fix + Prettier --write solo sobre los archivos staged
+
+Esto asegura que todo lo que commitea ya pasó por el formateador y el linter.
+Se configura automáticamente al ejecutar `pnpm install` (vía el script `prepare`).
+
+```bash
+git commit -m "feat: algo"
+# → antes del commit, lint-staged corrige y formatea los archivos staged
+```
+
 ## Estructura
 
 ```
@@ -205,4 +232,5 @@ pnpm start:dev      # nest start --watch
 pnpm start:prod     # node dist/main
 pnpm lint           # ESLint --fix
 pnpm format         # Prettier --write
+pnpm prepare        # Instala hooks de Husky (se ejecuta solo en pnpm install)
 ```
