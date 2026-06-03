@@ -1,9 +1,4 @@
-import {
-  IsString,
-  IsNumber,
-  IsOptional,
-  validateSync,
-} from 'class-validator';
+import { IsNumber, IsOptional, validateSync } from 'class-validator';
 import { plainToClass } from 'class-transformer';
 import { Logger } from '@nestjs/common';
 
