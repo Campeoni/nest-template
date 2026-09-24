@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, validateSync } from 'class-validator';
+import { IsNumber, IsOptional, IsString, validateSync } from 'class-validator';
 import { plainToClass } from 'class-transformer';
 import { Logger } from '@nestjs/common';
 
@@ -13,15 +13,44 @@ export class EnvironmentVariables {
   @IsOptional()
   PORT: number = 3000;
 
-  // ─── Ejemplos ─────────────────────────────────────
-  // Borralos y poné los tuyos:
-  //
-  // @IsString()
-  // DATABASE_URL!: string;
-  //
-  // @IsString()
-  // @IsOptional()
-  // LOG_LEVEL: string = 'log';
+  // Nivel mínimo de log. Elegir uno habilita ese nivel y los superiores.
+  // Se valida como texto y NO con una lista cerrada a propósito: un error de
+  // tipeo en una variable de logging no puede impedir que la aplicación
+  // arranque. El FileLogger normaliza el valor y cae a 'log' si no lo reconoce.
+  @IsString()
+  @IsOptional()
+  LOG_LEVEL: string = 'log';
+
+  // Carpeta del archivo de log. Si no se define, se usa el directorio de
+  // trabajo (o la carpeta del ejecutable si está empaquetado). Admite rutas
+  // relativas: se resuelven contra el directorio de trabajo del proceso.
+  @IsString()
+  @IsOptional()
+  LOG_DIR: string;
+
+  // Fuerza el archivo de log en desarrollo (true|false). Sin esta variable,
+  // en desarrollo el log va únicamente a consola.
+  // Se valida como texto y no como booleano a propósito: con
+  // enableImplicitConversion, class-transformer convierte cualquier string
+  // no vacío con Boolean(), así que 'false' terminaría siendo true.
+  // Solo el valor exacto 'true' lo enciende; cualquier otro lo deja apagado,
+  // sin cortar el arranque.
+  @IsString()
+  @IsOptional()
+  LOG_TO_FILE: string;
+
+  // Nombre del archivo de log dentro de LOG_DIR. Default: app.log.
+  @IsString()
+  @IsOptional()
+  LOG_FILE: string = 'app.log';
+
+  // Habilita la documentación Swagger en /api/docs. Apagado por defecto: la
+  // documentación no debe quedar expuesta sin una decisión explícita. Solo el
+  // valor exacto 'true' la enciende; cualquier otro la deja apagada, sin cortar
+  // el arranque.
+  @IsString()
+  @IsOptional()
+  SWAGGER_ENABLED: string;
 }
 
 /**
